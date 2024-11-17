@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// schema.prisma
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  username String    @unique
+  password String
+  role     String
+  email    String
+  Website  Website[]
+}
+
+model Website {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  url         String
+  description String
+  admin       Admin     @relation(fields: [adminId], references: [id])
+  adminId     String    @db.ObjectId
+  purchases   Purchase[]
+}
+
+model Purchase {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  item      String
+  cost      Float
+  date      DateTime
+  website   Website  @relation(fields: [websiteId], references: [id])
+  websiteId String   @db.ObjectId
+}
+
+model GameRules {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  description   String
+  lastModified DateTime
+}
+
+model HowToPlay {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  lastUpdated DateTime
+}
+
+model StartScreen {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  displayTitle     String
+  backgroundImage String
+  gameOptions     String
+}
+
+model GameController {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  gameName      String
+  currentPlayer Int
+  sumQuota      Float
+  Game          Game[]
+}
+
+model Player {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  username String
+  score    Int
+  rank     String
+  status   String
+  Game     Game[]
+}
+
+model Game {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  status        String
+  startTime     DateTime
+  endTime       DateTime?
+  controller    GameController @relation(fields: [controllerId], references: [id])
+  controllerId  String         @db.ObjectId
+  player        Player         @relation(fields: [playerId], references: [id])
+  playerId      String         @db.ObjectId
+}
+
+model Deck {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  cards  String // JSON string of card IDs
+  Card   Card[]
+}
+
+model Card {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  value     String
+  suit      String
+  image     String
+  isPayable Boolean
+  deck      Deck    @relation(fields: [deckId], references: [id])
+  deckId    String  @db.ObjectId
+}
