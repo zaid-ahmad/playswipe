@@ -46,22 +46,26 @@ export default function GameInterface() {
     };
 
     return (
-        <div className='container mx-auto p-4'>
+        <div className='container mx-auto p-4 mt-28'>
             <Card className='max-w-md mx-auto'>
                 <CardHeader>
-                    <CardTitle>Card Game</CardTitle>
+                    <CardTitle>PlaySwipe Online</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {!gameState?.gameId ? (
                         <div className='space-y-4'>
                             <Input
                                 type='text'
-                                placeholder='Enter username'
+                                placeholder='Choose a username'
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className='w-full'
                             />
-                            <Button onClick={startGame} className='w-full'>
+                            <Button
+                                onClick={startGame}
+                                variant={"destructive"}
+                                className='w-full'
+                            >
                                 Start Game
                             </Button>
                         </div>
